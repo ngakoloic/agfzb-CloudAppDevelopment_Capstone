@@ -3,9 +3,41 @@
 <head>
     <meta charset="UTF-8">
     {% load static %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
     <body>
-    <!--Add a registration form here -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <!-- <a class="navbar-brand" href="#">Dealer's App</a> -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a class="nav-link active" aria-current="page" href="/djangoapp">Home</a>
+                        <a class="nav-link" href="/djangoapp/about">About Us</a>
+                        <a class="nav-link" href="/djangoapp/contact">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <form action="{% url 'djangoapp:registration' %}" method="post">
+            <div class="container">
+            <h1>Sign Up</h1>
+            <hr>
+            <label for="username"><b>User Name</b></label>
+            <input type="text" class="form-control" placeholder="Enter User Name: " name="username" required>
+            <label for="firstname"><b>First Name</b></label>
+            <input type="text" class="form-control" placeholder="Enter First Name: " name="firstname" required>
+            <label for="lastname"><b>Last Name</b></label>
+            <input type="text" class="form-control" placeholder="Enter Last Name: " name="lastname" required>
+            <label for="psw"><b>Password</b></label>
+            <input type="password" class="form-control mb-3" placeholder="Enter Password: " name="psw" required>
+            <div>
+                {% csrf_token %}
+                <button class="btn btn-primary" type="submit">Sign Up</button>
+            </div>
+            </div>
+        </form>
     </body>
 </html>

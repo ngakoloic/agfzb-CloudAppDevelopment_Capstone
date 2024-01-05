@@ -98,7 +98,7 @@ def registration_request(request):
 def get_dealerships(request):
     if request.method == "GET":
         #launch get-dealership.js server to get this url
-        url = "https://bngako-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership"
+        url = "https://bngako-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         # dealerships = get_dealer_by_id(url, dealerId=1)
@@ -112,11 +112,11 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         #launch reviews.py server to get this url
-        url = "https://bngako-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review?dealerId="+str(dealer_id)
+        url = "https://bngako-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review?dealerId="+str(dealer_id)
         # Get dealers from the URL
         reviews = get_dealer_reviews_from_cf(url)
         # Concat all review's
-        dealer_reviews = ' </br> '.join([review.review for review in reviews])
+        dealer_reviews = ' </br> '.join([review.review+' : '+review.sentiment for review in reviews])
         # Return a list of dealer short name
         return HttpResponse(dealer_reviews)
 

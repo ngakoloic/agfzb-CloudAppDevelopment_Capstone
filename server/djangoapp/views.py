@@ -3,12 +3,13 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-from .restapis import get_dealers_from_cf, get_dealer_by_id, get_dealer_reviews_from_cf
+from .restapis import get_dealers_from_cf, get_dealer_by_id, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
 import logging
 import json
+from django.contrib.auth.decorators import login_required
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -121,6 +122,25 @@ def get_dealer_details(request, dealer_id):
         return HttpResponse(dealer_reviews)
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+@login_required
+def add_review(request, dealer_id):
+    review = dict()
+    # review["time"] = datetime.utcnow().isoformat()
+    review["id"] = 99
+    review["name"] = 'Loic'
+    review["dealership"] = 11
+    review["review"] = "This is a fantastic car dealer"
+    review["purchase"] = False
+    review["purchase_date"] = "02/10/2022"
+    review["car_make"] = "Audi"
+    review["car_model"] = "Car"
+    review["car_year"] = 2021
 
+    json_payload = dict()
+    json_payload["review"] = review
+
+    url = 'https://bngako-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
+
+    result = post_request(url, json_payload, dealerId=dealer_id)
+    # Return the post review
+    return HttpResponse(result['message'])

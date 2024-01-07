@@ -97,50 +97,65 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
+    context = {}
     if request.method == "GET":
         #launch get-dealership.js server to get this url
         url = "https://bngako-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
+        context['dealership_list'] = dealerships
         # dealerships = get_dealer_by_id(url, dealerId=1)
         # Concat all dealer's short name
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        # dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
         # Return a list of dealer short name
-        return HttpResponse(dealer_names)
-
+        return render(request, 'djangoapp/index.html', context)
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
+    context = {}
     if request.method == "GET":
         #launch reviews.py server to get this url
         url = "https://bngako-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review?dealerId="+str(dealer_id)
         # Get dealers from the URL
         reviews = get_dealer_reviews_from_cf(url)
+        context['review_list'] = reviews
+        context['dealer_id'] = dealer_id
         # Concat all review's
-        dealer_reviews = ' </br> '.join([review.review+' : '+review.sentiment for review in reviews])
+        # dealer_reviews = ' </br> '.join([review.review+' : '+review.sentiment for review in reviews])
         # Return a list of dealer short name
-        return HttpResponse(dealer_reviews)
+        return render(request, 'djangoapp/dealer_details.html', context)
 
 # Create a `add_review` view to submit a review
 @login_required
 def add_review(request, dealer_id):
-    review = dict()
-    # review["time"] = datetime.utcnow().isoformat()
-    review["id"] = 99
-    review["name"] = 'Loic'
-    review["dealership"] = 11
-    review["review"] = "This is a fantastic car dealer"
-    review["purchase"] = False
-    review["purchase_date"] = "02/10/2022"
-    review["car_make"] = "Audi"
-    review["car_model"] = "Car"
-    review["car_year"] = 2021
+    if request.method == "GET":
+        context = {}
+        url_1 = "https://bngako-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review?dealerId=all"
+        cars = get_dealer_reviews_from_cf(url_1)
+        url_2 = "https://bngako-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership?id="+str(dealer_id)
+        dealership = get_dealers_from_cf(url_2)
+        context['dealership'] = dealership[0]
+        context['dealer_id'] = dealer_id
+        context['cars'] = cars
+        return render(request, 'djangoapp/add_review.html', context)
+    elif request.method == "POST":
+        car = request.POST['car'].split('-')
+        review = dict()
+        review["id"] = request.POST['id']
+        review["name"] = request.POST['name']
+        review["dealership"] = dealer_id
+        review["review"] = request.POST['content']
+        review["purchase"] = request.POST['purchasecheck']
+        review["purchase_date"] = request.POST['purchasedate']
+        review["car_make"] = car[0]
+        review["car_model"] = car[1]
+        review["car_year"] = car[2]
 
-    json_payload = dict()
-    json_payload["review"] = review
+        json_payload = dict()
+        json_payload["review"] = review
 
-    url = 'https://bngako-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
+        url = 'https://bngako-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review'
 
-    result = post_request(url, json_payload, dealerId=dealer_id)
-    # Return the post review
-    return HttpResponse(result['message'])
+        result = post_request(url, json_payload, dealerId=dealer_id)
+        # Return the post review
+        return redirect("djangoapp:dealer_details", dealer_id=dealer_id)

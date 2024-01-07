@@ -140,12 +140,17 @@ def add_review(request, dealer_id):
         return render(request, 'djangoapp/add_review.html', context)
     elif request.method == "POST":
         car = request.POST['car'].split('-')
+        purchase = request.POST['purchasecheck']
+        if purchase == 'on':
+            purchase = True
+        elif purchase == 'off':
+            purchase = False
         review = dict()
         review["id"] = request.POST['id']
         review["name"] = request.POST['name']
         review["dealership"] = dealer_id
         review["review"] = request.POST['content']
-        review["purchase"] = request.POST['purchasecheck']
+        review["purchase"] = purchase
         review["purchase_date"] = request.POST['purchasedate']
         review["car_make"] = car[0]
         review["car_model"] = car[1]

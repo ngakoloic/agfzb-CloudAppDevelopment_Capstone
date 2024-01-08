@@ -100,7 +100,7 @@ def get_dealerships(request):
     context = {}
     if request.method == "GET":
         #launch get-dealership.js server to get this url
-        url = "https://bngako-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership"
+        url = "https://bngako-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         context['dealership_list'] = dealerships
@@ -115,7 +115,7 @@ def get_dealer_details(request, dealer_id):
     context = {}
     if request.method == "GET":
         #launch reviews.py server to get this url
-        url = "https://bngako-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review?dealerId="+str(dealer_id)
+        url = "https://bngako-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review?dealerId="+str(dealer_id)
         # Get dealers from the URL
         reviews = get_dealer_reviews_from_cf(url)
         context['review_list'] = reviews
@@ -130,9 +130,9 @@ def get_dealer_details(request, dealer_id):
 def add_review(request, dealer_id):
     if request.method == "GET":
         context = {}
-        url_1 = "https://bngako-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review?dealerId=all"
+        url_1 = "https://bngako-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/review?dealerId=all"
         cars = get_dealer_reviews_from_cf(url_1)
-        url_2 = "https://bngako-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership?id="+str(dealer_id)
+        url_2 = "https://bngako-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/dealership?id="+str(dealer_id)
         dealership = get_dealers_from_cf(url_2)
         context['dealership'] = dealership[0]
         context['dealer_id'] = dealer_id
